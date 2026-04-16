@@ -35,6 +35,9 @@ jobs:
 
       - name: Install Zig
         uses: mlugg/setup-zig@v2
+        with:
+          # Pinned to match what the pinned ghostty commit requires.
+          version: 0.15.2
 
       - name: Install Go
         uses: actions/setup-go@v5
