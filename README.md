@@ -26,8 +26,27 @@ shell doesn't give you:
 
 ## Install
 
-Tagged releases live on [GitHub](https://github.com/montanaflynn/headless-terminal/releases),
-but they currently ship source only — no pre-built binaries yet. Build locally:
+### Pre-built binary
+
+Grab the latest from the [releases page](https://github.com/montanaflynn/headless-terminal/releases).
+One-liners for the currently-shipped platforms:
+
+```shell
+# macOS (Apple Silicon)
+curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-darwin-arm64.tar.gz | tar xz
+sudo mv ht /usr/local/bin/
+
+# Linux (x86_64)
+curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-linux-amd64.tar.gz | tar xz
+sudo mv ht /usr/local/bin/
+```
+
+Bump the version segment when newer releases drop. The binary is ~6MB,
+statically links `libghostty-vt`, and depends only on libc.
+
+### From source
+
+Requires [Zig](https://ziglang.org) 0.15.2, CMake, pkg-config, and Go 1.22+.
 
 ```shell
 git clone https://github.com/montanaflynn/headless-terminal
@@ -35,16 +54,15 @@ cd headless-terminal
 make build
 ```
 
-Requires [Zig](https://ziglang.org), CMake, pkg-config, and Go 1.22+.
 `make` orchestrates two phases: CMake fetches [ghostty](https://github.com/ghostty-org/ghostty)
 at a pinned commit and builds `libghostty-vt.a` with Zig; then Go builds
-`./ht` with cgo, linking that static lib via pkg-config. The binary is ~6MB
-and depends only on libc.
+`./ht` with cgo, linking that static lib via pkg-config.
 
-Multi-platform binaries via goreleaser + a Homebrew tap are planned once the
-API stabilizes.
+### Platforms
 
-**Platforms:** macOS and Linux. Windows is not supported (no PTY).
+**Supported:** macOS (Apple Silicon) and Linux (x86_64). linux/arm64 currently
+hits an upstream panic in libghostty-vt; it's in the source build matrix but
+not in the release binaries. Windows is not supported (no PTY).
 
 ## Quickstart
 
