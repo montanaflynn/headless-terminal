@@ -26,8 +26,8 @@ shell doesn't give you:
 
 ## Install
 
-From source is currently the only option. Requires [Zig](https://ziglang.org),
-CMake, pkg-config, and Go 1.22+.
+Tagged releases live on [GitHub](https://github.com/montanaflynn/headless-terminal/releases),
+but they currently ship source only — no pre-built binaries yet. Build locally:
 
 ```shell
 git clone https://github.com/montanaflynn/headless-terminal
@@ -35,13 +35,14 @@ cd headless-terminal
 make build
 ```
 
+Requires [Zig](https://ziglang.org), CMake, pkg-config, and Go 1.22+.
 `make` orchestrates two phases: CMake fetches [ghostty](https://github.com/ghostty-org/ghostty)
 at a pinned commit and builds `libghostty-vt.a` with Zig; then Go builds
 `./ht` with cgo, linking that static lib via pkg-config. The binary is ~6MB
 and depends only on libc.
 
-Pre-built release binaries are a TODO — the build currently requires a full
-Zig + CMake toolchain, which is not something casual users want to install.
+Multi-platform binaries via goreleaser + a Homebrew tap are planned once the
+API stabilizes.
 
 **Platforms:** macOS and Linux. Windows is not supported (no PTY).
 
