@@ -103,7 +103,11 @@ type Session struct {
 	ptmx *os.File
 	cmd  *exec.Cmd
 
-	done chan struct{} // closed when child has exited and reader drained
+	done     chan struct{} // closed when child has exited (waitLoop finished)
+	readDone chan struct{} // closed when readLoop has returned — must
+	// block Close before it zeroes vt, since the PTY master close that
+	// waitLoop issues only *unblocks* readLoop's Read; the goroutine's
+	// actual exit happens asynchronously after that.
 }
 
 // Start launches opts.Cmd in a new PTY and begins parsing its output.
@@ -158,6 +162,7 @@ func Start(opts Options) (*Session, error) {
 		ptmx:      ptmx,
 		cmd:       c,
 		done:      make(chan struct{}),
+		readDone:  make(chan struct{}),
 	}
 
 	go s.readLoop()
@@ -167,8 +172,10 @@ func Start(opts Options) (*Session, error) {
 }
 
 // readLoop pumps PTY output into libghostty and to all subscribers.
-// Exits when the PTY master hits EOF or errors.
+// Exits when the PTY master hits EOF or errors. Closes readDone on
+// exit so Close can wait for it before tearing down vt.
 func (s *Session) readLoop() {
+	defer close(s.readDone)
 	buf := make([]byte, 32*1024)
 	for {
 		n, err := s.ptmx.Read(buf)
@@ -176,6 +183,13 @@ func (s *Session) readLoop() {
 			chunk := make([]byte, n)
 			copy(chunk, buf[:n])
 			s.mu.Lock()
+			// Defensive nil check: Close may have torn down vt while
+			// our Read was returning from a just-closed ptmx. In that
+			// case skip processing and let the loop exit on the err.
+			if s.vt == nil {
+				s.mu.Unlock()
+				break
+			}
 			_, _ = s.vt.Write(chunk)
 			// Fan out to subscribers. Blocking send: if a subscriber
 			// can't keep up, it backpressures the PTY read loop. That
@@ -521,6 +535,12 @@ func (s *Session) Close() error {
 		_ = s.Kill()
 		<-s.done
 	}
+	// Always wait for readLoop to exit before tearing down vt: waitLoop
+	// closing ptmx only *unblocks* a pending Read, the goroutine then
+	// exits asynchronously. Without this wait, readLoop could still be
+	// mid-iteration when we null vt, causing a nil-ptr cgo call.
+	<-s.readDone
+
 	s.mu.Lock()
 	if s.rs != nil {
 		s.rs.Close()
