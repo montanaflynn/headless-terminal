@@ -24,9 +24,11 @@ jobs:
           - os: ubuntu-latest
             goos: linux
             goarch: amd64
-          - os: ubuntu-24.04-arm
-            goos: linux
-            goarch: arm64
+          # linux/arm64 disabled: libghostty-vt panics with nil-pointer
+          # in VTWrite on arm64 Linux (upstream). Restore once resolved:
+          # - os: ubuntu-24.04-arm
+          #   goos: linux
+          #   goarch: arm64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
