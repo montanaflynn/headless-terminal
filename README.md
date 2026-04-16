@@ -39,6 +39,10 @@ sudo mv ht /usr/local/bin/
 # Linux (x86_64)
 curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-linux-amd64.tar.gz | tar xz
 sudo mv ht /usr/local/bin/
+
+# Linux (arm64)
+curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-linux-arm64.tar.gz | tar xz
+sudo mv ht /usr/local/bin/
 ```
 
 Bump the version segment when newer releases drop. The binary is ~6MB,
@@ -60,9 +64,8 @@ at a pinned commit and builds `libghostty-vt.a` with Zig; then Go builds
 
 ### Platforms
 
-**Supported:** macOS (Apple Silicon) and Linux (x86_64). linux/arm64 currently
-hits an upstream panic in libghostty-vt; it's in the source build matrix but
-not in the release binaries. Windows is not supported (no PTY).
+**Supported:** macOS (Apple Silicon) and Linux (x86_64, arm64).
+Windows is not supported (no PTY).
 
 ## Quickstart
 
