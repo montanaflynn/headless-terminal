@@ -24,12 +24,30 @@ shell doesn't give you:
 
 `ht` is those three things, wrapped in a daemon + a boring CLI.
 
+## Install
+
+From source is currently the only option. Requires [Zig](https://ziglang.org),
+CMake, pkg-config, and Go 1.22+.
+
+```shell
+git clone https://github.com/montanaflynn/headless-terminal
+cd headless-terminal
+make build
+```
+
+`make` orchestrates two phases: CMake fetches [ghostty](https://github.com/ghostty-org/ghostty)
+at a pinned commit and builds `libghostty-vt.a` with Zig; then Go builds
+`./ht` with cgo, linking that static lib via pkg-config. The binary is ~6MB
+and depends only on libc.
+
+Pre-built release binaries are a TODO — the build currently requires a full
+Zig + CMake toolchain, which is not something casual users want to install.
+
+**Platforms:** macOS and Linux. Windows is not supported (no PTY).
+
 ## Quickstart
 
 ```shell
-# One-time: build the native libghostty-vt library + ht binary.
-make build
-
 # Start a headless vim session, returns a short session ID.
 ./ht run --name notes vim /tmp/notes.md
 
@@ -116,33 +134,6 @@ All of these are also available as standalone `ht wait` subcommand flags.
 | 1 | runtime error (session missing, IO, daemon unreachable) |
 | 2 | usage error (bad flags) |
 | 3 | `wait` timeout |
-
-## Install
-
-### From source (only option for now)
-
-Requires [Zig](https://ziglang.org), CMake, pkg-config, and Go 1.22+.
-
-```shell
-git clone https://github.com/montanaflynn/headless-terminal
-cd headless-terminal
-make build
-```
-
-`make` orchestrates the two phases:
-
-1. CMake fetches [ghostty](https://github.com/ghostty-org/ghostty) at a pinned
-   commit and builds `libghostty-vt.a` with Zig.
-2. Go builds `./ht` with cgo, linking that static lib via pkg-config.
-
-The binary is ~6MB and depends only on libc.
-
-Pre-built release binaries are a TODO — the build currently requires a full
-Zig + CMake toolchain, which is not something casual users want to install.
-
-### Platforms
-
-macOS and Linux. Windows is not supported (no PTY).
 
 ## Architecture
 
