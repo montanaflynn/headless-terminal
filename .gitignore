@@ -1,0 +1,10 @@
+# Built binary
+/ht
+
+# CMake + zig build output for libghostty-vt
+/third_party/libghostty-vt/build/
+
+# Editor/OS cruft
+.DS_Store
+*.swp
+*.swo
