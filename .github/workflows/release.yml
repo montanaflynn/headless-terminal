@@ -1,0 +1,104 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  # Manual trigger so we can (re)build binaries for an existing tag.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and attach binaries to'
+        required: true
+
+jobs:
+  build:
+    name: build ${{ matrix.goos }}-${{ matrix.goarch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+          - os: ubuntu-24.04-arm
+            goos: linux
+            goarch: arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Install Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.15.2
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          # Match whatever's pinned in go.mod so CI tracks the project's
+          # actual minimum. Bumping here requires editing go.mod.
+          go-version-file: go.mod
+
+      - name: Install CMake + pkg-config (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake pkg-config
+
+      - name: Install pkg-config (macOS)
+        if: runner.os == 'macOS'
+        run: brew install pkg-config
+
+      - name: Build
+        run: make build
+
+      - name: Run tests
+        run: make test
+
+      - name: Package
+        id: package
+        shell: bash
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          NAME="ht-${TAG}-${{ matrix.goos }}-${{ matrix.goarch }}"
+          mkdir -p dist
+          tar czf "dist/${NAME}.tar.gz" ht README.md
+          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.package.outputs.name }}
+          path: dist/*.tar.gz
+
+  release:
+    name: attach binaries
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Upload to GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          # Create the release if nobody did it manually yet. Harmless
+          # if it already exists (the `|| true` covers that).
+          gh release view "$TAG" >/dev/null 2>&1 \
+            || gh release create "$TAG" --generate-notes --title "$TAG" \
+            || true
+          # --clobber lets re-runs replace previous uploads for the same tag.
+          gh release upload "$TAG" dist/*.tar.gz --clobber
