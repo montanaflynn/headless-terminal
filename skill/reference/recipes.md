@@ -34,6 +34,40 @@ ht remove i
 
 `ht wait` (no `send`) is the cleanest way to block on a prompt for an already-running session.
 
+## Drive a turn-based TUI (nethack, roguelikes, any curses game)
+
+```
+ht run --size 80x24 --name g nethack -u Agent
+ht send --wait-text "\[yn\]" --regex --view g "y"          # dismiss startup prompt
+ht send --wait-idle 200ms --view g "Fl"                    # fight left (east)
+ht send --wait-text "--More--" --view g "<Space>"          # dismiss message
+```
+
+Three things that make this work:
+
+- **One call per turn.** `--view` appends the snapshot to the send result,
+  so there is no separate `ht view` step.
+- **Deterministic sync.** `--wait-text "\[yn\]" --regex` blocks until the
+  next prompt actually renders. `--wait-idle 200ms` alone is racy on fast
+  transitions — a short idle window can return between two prompts and
+  your next keystroke lands on the wrong one.
+- **Cursor in the snapshot.** The trailing `cursor: R,C` line in the plain
+  output tells you where the game thinks "you" are. Critical when the map
+  has multiple `@` glyphs (player + human-shaped monsters like Medusa).
+
+For death/game-over screens, chain wait-text patterns through each prompt
+rather than firing blind keystrokes at idle:
+
+```
+ht send --wait-text "Die?"     --view g "y"
+ht send --wait-text "identify" --view g "n"
+ht send --wait-text "overview" --view g "n"
+ht send --wait-text "bones"    --view g "n"
+```
+
+Plain `--wait-text` does substring match — no regex escaping needed. Add
+`--regex` only when you need alternatives or character classes.
+
 ## Dismiss a modal / unexpected prompt
 
 ```

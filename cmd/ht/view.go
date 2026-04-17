@@ -4,7 +4,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
+
+	"headless-terminal/internal/protocol"
 )
 
 func cmdView(args []string) error {
@@ -38,9 +41,25 @@ func cmdView(args []string) error {
 	if jsonOut {
 		return emitJSON(os.Stdout, res)
 	}
-	fmt.Print(res.Screen)
-	if len(res.Screen) > 0 && res.Screen[len(res.Screen)-1] != '\n' {
-		fmt.Println()
-	}
+	writeScreen(os.Stdout, res.Screen, res.Cursor, format)
 	return nil
+}
+
+// writeScreen prints a snapshot for human/agent consumption. For plain and
+// ansi formats it appends a trailing `cursor: R,C` line (cheap, disambiguates
+// same-glyph monsters in TUIs like nethack). Skipped for html since it would
+// break the document, and skipped when Cursor is nil (off-viewport).
+func writeScreen(w io.Writer, screen string, cursor *protocol.Cursor, format string) {
+	fmt.Fprint(w, screen)
+	if len(screen) > 0 && screen[len(screen)-1] != '\n' {
+		fmt.Fprintln(w)
+	}
+	if cursor == nil || format == "html" {
+		return
+	}
+	if cursor.Visible {
+		fmt.Fprintf(w, "cursor: %d,%d\n", cursor.Row, cursor.Col)
+	} else {
+		fmt.Fprintf(w, "cursor: %d,%d (hidden)\n", cursor.Row, cursor.Col)
+	}
 }

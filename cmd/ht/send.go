@@ -126,10 +126,7 @@ func cmdSend(args []string) error {
 	if jsonOut {
 		_ = emitJSON(os.Stdout, res)
 	} else if res.View != nil {
-		fmt.Print(res.View.Screen)
-		if len(res.View.Screen) > 0 && res.View.Screen[len(res.View.Screen)-1] != '\n' {
-			fmt.Println()
-		}
+		writeScreen(os.Stdout, res.View.Screen, res.View.Cursor, format)
 	}
 
 	// Exit code 3 on wait timeout, per spec. View is still printed above

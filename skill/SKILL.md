@@ -49,10 +49,13 @@ Picking the right wait flag is the hard part — see `reference/waits.md` before
 
 ## Output formats
 
-- `ht view --format plain` (default) — just text
-- `ht view --format ansi` — preserves colors/styles; good for showing the user
-- `ht view --format html` — embeddable
-- `ht view --json` — structured (cursor position, size, text)
+- `ht view --format plain` (default) — text grid with a trailing `cursor: R,C`
+  line. Use the cursor to disambiguate same-glyph entities (e.g. two `@`s in
+  nethack: the cursor sits on you).
+- `ht view --format ansi` — preserves colors/styles; good for showing the user.
+  Also appends the `cursor:` line.
+- `ht view --format html` — embeddable; no cursor line (would break the doc).
+- `ht view --json` — structured (cursor position, size, text).
 
 ## Cleanup
 
