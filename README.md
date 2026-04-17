@@ -95,6 +95,21 @@ Or watch a live session from a second pane:
 # (pane A now shows nethack, live)
 ```
 
+## Use with an AI agent
+
+An `ht`-aware skill lives in [`skill/`](skill/). It teaches an agent when to
+reach for `ht`, the vim-style key notation, the wait-strategy decision tree
+(the part agents get wrong), and common recipes. Install it into Claude Code:
+
+```shell
+cp -r skill ~/.claude/skills/ht
+```
+
+The skill uses Anthropic's standard skills format — other agent frameworks
+that consume the same layout can point their loader at `skill/` or copy it
+into their equivalent directory. Progressive disclosure: only the short
+`SKILL.md` is always in context; reference docs load on demand.
+
 ## Commands
 
 ```
