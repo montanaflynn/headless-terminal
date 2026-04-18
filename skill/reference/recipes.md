@@ -106,6 +106,29 @@ ht run --cwd /tmp --env FOO=bar --env DEBUG=1 --name s my-tui
 
 `--env` can repeat.
 
+## Record a session to asciicast / GIF
+
+```
+ht record --output session.cast S     # start recording; Ctrl-C to stop
+agg session.cast session.gif          # render an animated GIF
+```
+
+Output is [asciicast v2](https://docs.asciinema.org/manual/asciicast/v2/)
+— standard newline-delimited JSON with a header line and `[t, "o", bytes]`
+event lines. Works with `asciinema play`, `agg` (Rust, by the asciinema
+authors), `svg-term-cli`, and the asciinema web player. Nothing
+ht-specific; any tool that reads asciicasts will read ours.
+
+Record a specific window of action by chaining with `send`:
+
+```
+ht record --output action.cast S &    # background recorder
+REC=$!
+ht send --wait-text "Done" S "<commands...>"
+kill -INT $REC                        # stop when your action finishes
+agg action.cast action.gif
+```
+
 ## Screenshot a session to PNG
 
 ```

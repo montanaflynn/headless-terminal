@@ -119,6 +119,7 @@ ht view <sid>         snapshot current screen (plain | ansi | html | png | json)
 ht send <sid> <keys>  send keystrokes; optional --view / --wait-* / --rate
 ht wait <sid> ...     block until a condition is met
 ht watch <sid>        live-stream a session; blocks until it exists
+ht record <sid>       record session as asciicast (pipe to agg for GIFs)
 ht stop <sid>         graceful shutdown (SIGTERM, escalates)
 ht kill <sid>         immediate SIGKILL
 ht remove <sid>       delete an exited session's record

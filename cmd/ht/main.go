@@ -17,6 +17,7 @@ Usage:
                                optional compound: --wait-* and --view
   ht view <sid>                snapshot current screen
   ht watch <sid>               live stream output (Ctrl-C to exit)
+  ht record <sid>              record session as asciicast (Ctrl-C to stop)
   ht wait <sid> <conditions>   block until condition met
 
   ht debug <cmd...>            foreground: run a command with libghostty
@@ -53,6 +54,8 @@ func main() {
 		err = cmdView(args)
 	case "watch":
 		err = cmdWatch(args)
+	case "record":
+		err = cmdRecord(args)
 	case "wait":
 		err = cmdWait(args)
 	case "daemon":
