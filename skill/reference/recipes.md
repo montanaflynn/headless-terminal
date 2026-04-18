@@ -106,6 +106,22 @@ ht run --cwd /tmp --env FOO=bar --env DEBUG=1 --name s my-tui
 
 `--env` can repeat.
 
+## Screenshot a session to PNG
+
+```
+ht view --format png --output /tmp/session.png S
+```
+
+Rasterizes the current screen with window chrome, macOS-style dots, and a
+drop shadow. Handy for:
+- Letting yourself *look* at a session (Claude can read PNGs through the
+  normal file-read tool).
+- Attaching to bug reports or demo write-ups.
+- Verifying UI changes — snapshot before and after.
+
+Refuses to write PNG bytes to an interactive terminal (pass `--output FILE`
+or redirect stdout). Colors, bold, italics, and inverse all render.
+
 ## Extract text from the screen
 
 ```

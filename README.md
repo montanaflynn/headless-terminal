@@ -115,7 +115,7 @@ into their equivalent directory. Progressive disclosure: only the short
 ```
 ht run <cmd...>       start a session (returns a session ID)
 ht list               list sessions (table in a tty, JSON when piped)
-ht view <sid>         snapshot current screen (plain | ansi | html | json)
+ht view <sid>         snapshot current screen (plain | ansi | html | png | json)
 ht send <sid> <keys>  send keystrokes; optional --view / --wait-* / --rate
 ht wait <sid> ...     block until a condition is met
 ht watch <sid>        live-stream a session; blocks until it exists

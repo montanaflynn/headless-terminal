@@ -1,0 +1,48 @@
+headless-terminal (ht)
+=======================
+
+This product contains third-party code and assets. Attribution and license
+notices for each are reproduced below.
+
+
+termshot
+--------
+
+`internal/termshot/output.go` is vendored from homeport/termshot
+(https://github.com/homeport/termshot), release v0.6.1, file
+`internal/img/output.go`. The package declaration was changed from `img`
+to `termshot` to suit the vendoring path; the code is otherwise unmodified.
+
+Copyright © 2020 The Homeport Team. Licensed under the MIT License. See
+`internal/termshot/LICENSE` for the full text.
+
+
+Runtime dependencies
+--------------------
+
+The PNG renderer pulls in the following third-party Go modules at build
+time (tracked in `go.mod`). These are not vendored; they are fetched by
+`go mod` like any other dependency, but their licenses are reproduced in
+distributed binaries by Go's module system.
+
+- github.com/fogleman/gg                 (MIT)
+- github.com/golang/freetype             (FTL or GPLv2 — this project
+                                          distributes under FTL)
+- github.com/esimov/stackblur-go         (MIT)
+- github.com/gonvenience/bunt            (MIT)
+- github.com/gonvenience/font            (MIT)
+  - bundles the Hack monospace typeface   (Hack Open Font License v2.0,
+                                           which is MIT-style with a name
+                                           reservation — see
+                                           https://github.com/source-foundry/Hack)
+- github.com/gonvenience/term            (MIT)
+- github.com/mattn/go-isatty             (MIT)
+- golang.org/x/image                     (BSD-3-Clause)
+
+
+libghostty-vt
+-------------
+
+`third_party/libghostty-vt/` builds and statically links Ghostty's VT parser.
+Ghostty is licensed under the MIT License. See
+https://github.com/ghostty-org/ghostty for the upstream project.

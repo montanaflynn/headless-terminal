@@ -55,6 +55,9 @@ Picking the right wait flag is the hard part — see `reference/waits.md` before
 - `ht view --format ansi` — preserves colors/styles; good for showing the user.
   Also appends the `cursor:` line.
 - `ht view --format html` — embeddable; no cursor line (would break the doc).
+- `ht view --format png --output FILE` — rasterized screenshot with window
+  chrome. Use for demos, bug reports, or to let yourself *see* a session
+  (Claude can read PNGs, can't render SVG).
 - `ht view --json` — structured (cursor position, size, text).
 
 ## Cleanup
