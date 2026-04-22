@@ -34,7 +34,10 @@ jobs:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Install Zig
-        uses: mlugg/setup-zig@v2
+        # Fork of mlugg/setup-zig pinned at a commit that runs on Node 24.
+        # Upstream's latest tag is still Node 20. Swap back to mlugg/setup-zig
+        # once they cut a Node-24 release.
+        uses: montanaflynn/setup-zig@b7fdb06bb16b5675d7a62955ba4e6bc38144cb7e
         with:
           # Pinned to match what the pinned ghostty commit requires.
           version: 0.15.2
