@@ -19,6 +19,18 @@ import (
 const (
 	altScreenEnter = "\x1b[?1049h"
 	altScreenExit  = "\x1b[?1049l"
+	// Modes like mouse tracking and bracketed paste are terminal-global,
+	// not per-screen-buffer — alt-screen exit won't turn them off. The
+	// watched session may have enabled any of these; reset them so the
+	// user's shell isn't left with stray mouse reports or hidden cursor.
+	termModeReset = "\x1b[?1000l" + // X10 mouse
+		"\x1b[?1002l" + // button-event mouse
+		"\x1b[?1003l" + // any-event mouse
+		"\x1b[?1006l" + // SGR mouse
+		"\x1b[?1015l" + // urxvt mouse
+		"\x1b[?2004l" + // bracketed paste
+		"\x1b[?25h" + // show cursor
+		"\x1b[0m" // reset SGR attrs
 )
 
 func cmdWatch(args []string) error {
@@ -82,7 +94,7 @@ func cmdWatch(args []string) error {
 	defer func() {
 		if useAlt && !waiting {
 			// Only exit alt-screen if we entered it (i.e., OnReady fired).
-			_, _ = os.Stdout.WriteString(altScreenExit)
+			_, _ = os.Stdout.WriteString(termModeReset + altScreenExit)
 		}
 	}()
 
