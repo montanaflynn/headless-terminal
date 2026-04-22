@@ -221,9 +221,3 @@ All of these are also available as standalone `ht wait` subcommand flags.
 Each session owns a PTY master, a libghostty terminal (the authoritative
 screen model), and a set of subscriber channels for `ht watch`. All three
 are serialized behind a single mutex.
-
-## Status
-
-Pre-release. The API surface is stable enough to be useful but not frozen;
-the JSON wire protocol and CLI flags may still shift. Not yet on any package
-manager.
