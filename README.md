@@ -24,6 +24,22 @@ shell doesn't give you:
 
 `ht` is those three things, wrapped in a daemon + a boring CLI.
 
+## Use cases
+
+- **Agentic coding.** Let an agent drive interactive CLIs it otherwise can't —
+  `git add -p`, `gh auth login`, `create-next-app`, REPLs, debuggers, even
+  `vim` for surgical edits.
+- **CI tests for TUIs.** Script an interactive program in GitHub Actions:
+  run it, send keys, assert against the rendered screen (as text or a PNG
+  snapshot). Covers paths `expect`/`pexpect` can't — alternate screen,
+  colors, cursor position.
+- **Demo and doc generation.** Record keystroke-perfect asciicasts with
+  `ht record`, render to GIF via `agg`, or grab a one-shot PNG of the
+  current frame for a README or bug report.
+- **Follow-along debugging.** `ht watch` streams a session live to another
+  pane, so a human can shoulder-surf whatever an agent (or a detached
+  process) is driving — handy during skill development or pair debugging.
+
 ## Install
 
 ```shell
