@@ -2,7 +2,12 @@
 
 ![Claude Code driving nvim via ht](screenshot.png)
 
-[Install](#install) · [Quickstart](#quickstart) · [Commands](#commands) · [Use cases](#use-cases)
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#commands">Commands</a> ·
+  <a href="#use-cases">Use cases</a>
+</p>
 
 A puppeteer for terminal UIs. Drive `vim`, `emacs`, `htop`, `nethack`, or any
 other interactive TUI from a CLI (or an AI agent) — spawn the program in a
