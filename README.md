@@ -24,23 +24,51 @@ shell doesn't give you:
 
 `ht` is those three things, wrapped in a daemon + a boring CLI.
 
+## Use cases
+
+- **Agentic coding.** Let an agent drive interactive CLIs it otherwise can't —
+  `git add -p`, `gh auth login`, `create-next-app`, REPLs, debuggers, even
+  `vim` for surgical edits.
+- **CI tests for TUIs.** Script an interactive program in GitHub Actions:
+  run it, send keys, assert against the rendered screen (as text or a PNG
+  snapshot). Covers paths `expect`/`pexpect` can't — alternate screen,
+  colors, cursor position.
+- **Demo and doc generation.** Record keystroke-perfect asciicasts with
+  `ht record`, render to GIF via `agg`, or grab a one-shot PNG of the
+  current frame for a README or bug report.
+- **Follow-along debugging.** `ht watch` streams a session live to another
+  pane, so a human can shoulder-surf whatever an agent (or a detached
+  process) is driving — handy during skill development or pair debugging.
+
 ## Install
 
-### Pre-built binary
+```shell
+brew install montanaflynn/tap/ht
+```
 
-Grab the latest from the [releases page](https://github.com/montanaflynn/headless-terminal/releases).
-One-liners for the currently-shipped platforms:
+<details>
+<summary>From release</summary>
+
+Grab a tarball from the [releases page](https://github.com/montanaflynn/headless-terminal/releases),
+or extract + install in place:
+
+**macOS (Apple Silicon)**
 
 ```shell
-# macOS (Apple Silicon)
 curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-darwin-arm64.tar.gz | tar xz
 sudo mv ht /usr/local/bin/
+```
 
-# Linux (x86_64)
+**Linux (x86_64)**
+
+```shell
 curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-linux-amd64.tar.gz | tar xz
 sudo mv ht /usr/local/bin/
+```
 
-# Linux (arm64)
+**Linux (arm64)**
+
+```shell
 curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-linux-arm64.tar.gz | tar xz
 sudo mv ht /usr/local/bin/
 ```
@@ -48,7 +76,10 @@ sudo mv ht /usr/local/bin/
 Bump the version segment when newer releases drop. The binary is ~6MB,
 statically links `libghostty-vt`, and depends only on libc.
 
-### From source
+</details>
+
+<details>
+<summary>From source</summary>
 
 Requires [Zig](https://ziglang.org) 0.15.2, CMake, pkg-config, and Go 1.22+.
 
@@ -62,52 +93,58 @@ make build
 at a pinned commit and builds `libghostty-vt.a` with Zig; then Go builds
 `./ht` with cgo, linking that static lib via pkg-config.
 
-### Platforms
-
-**Supported:** macOS (Apple Silicon) and Linux (x86_64, arm64).
-Windows is not supported (no PTY).
+</details>
 
 ## Quickstart
 
 ```shell
 # Start a headless vim session, returns a short session ID.
-./ht run --name notes vim /tmp/notes.md
+ht run --name notes vim /tmp/notes.md
 
 # Drive it. Keys use vim-style notation (<CR>, <Esc>, <C-c>, <F1>, …).
-./ht send --view notes "ihello from an agent<Esc>:wq<CR>"
+ht send --view notes "ihello from an agent<Esc>:wq<CR>"
 
 # Session exited and the file is saved:
 cat /tmp/notes.md
 # → hello from an agent
 
-./ht remove notes
+ht remove notes
 ```
 
 Or watch a live session from a second pane:
 
 ```shell
 # Pane A: the watcher blocks until a matching session is created.
-./ht watch nethack-demo
+ht watch nethack-demo
 
 # Pane B (or an agent): create the session the watcher is waiting for.
-./ht run --size 78x46 --name nethack-demo nethack -u Claude
-./ht send --wait-duration 150ms --view nethack-demo "y"
+ht run --size 78x46 --name nethack-demo nethack -u Claude
+ht send --wait-duration 150ms --view nethack-demo "y"
 # (pane A now shows nethack, live)
 ```
 
 ## Use with an AI agent
 
-An `ht`-aware skill lives in [`skill/`](skill/). It teaches an agent when to
-reach for `ht`, the vim-style key notation, the wait-strategy decision tree
-(the part agents get wrong), and common recipes. Install it into Claude Code:
+An `ht`-aware skill lives in [`skills/ht/`](skills/ht/). It teaches an agent
+when to reach for `ht`, the vim-style key notation, the wait-strategy decision
+tree (the part agents get wrong), and common recipes.
+
+Preferred — [skills CLI](https://skills.sh) (handles per-agent paths for
+Claude Code, Codex, Cursor, Gemini, etc.):
 
 ```shell
-cp -r skill ~/.claude/skills/ht
+npx skills add montanaflynn/headless-terminal --skill ht
+```
+
+Fallback — drop it into Claude Code directly:
+
+```shell
+cp -r skills/ht ~/.claude/skills/ht
 ```
 
 The skill uses Anthropic's standard skills format — other agent frameworks
-that consume the same layout can point their loader at `skill/` or copy it
-into their equivalent directory. Progressive disclosure: only the short
+that consume the same layout can point their loader at `skills/ht/` or copy
+it into their equivalent directory. Progressive disclosure: only the short
 `SKILL.md` is always in context; reference docs load on demand.
 
 ## Commands
@@ -199,9 +236,3 @@ All of these are also available as standalone `ht wait` subcommand flags.
 Each session owns a PTY master, a libghostty terminal (the authoritative
 screen model), and a set of subscriber channels for `ht watch`. All three
 are serialized behind a single mutex.
-
-## Status
-
-Pre-release. The API surface is stable enough to be useful but not frozen;
-the JSON wire protocol and CLI flags may still shift. Not yet on any package
-manager.
