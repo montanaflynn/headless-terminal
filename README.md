@@ -26,16 +26,15 @@ shell doesn't give you:
 
 ## Install
 
-### Homebrew
-
 ```shell
 brew install montanaflynn/tap/ht
 ```
 
-### Pre-built binary
+<details>
+<summary>From release</summary>
 
 Grab a tarball from the [releases page](https://github.com/montanaflynn/headless-terminal/releases),
-or extract + install in place for the currently-shipped platforms:
+or extract + install in place:
 
 **macOS (Apple Silicon)**
 
@@ -61,7 +60,10 @@ sudo mv ht /usr/local/bin/
 Bump the version segment when newer releases drop. The binary is ~6MB,
 statically links `libghostty-vt`, and depends only on libc.
 
-### From source
+</details>
+
+<details>
+<summary>From source</summary>
 
 Requires [Zig](https://ziglang.org) 0.15.2, CMake, pkg-config, and Go 1.22+.
 
@@ -75,10 +77,7 @@ make build
 at a pinned commit and builds `libghostty-vt.a` with Zig; then Go builds
 `./ht` with cgo, linking that static lib via pkg-config.
 
-### Platforms
-
-**Supported:** macOS (Apple Silicon) and Linux (x86_64, arm64).
-Windows is not supported (no PTY).
+</details>
 
 ## Quickstart
 
