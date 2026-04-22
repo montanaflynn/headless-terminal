@@ -6,7 +6,8 @@
   <a href="#install">Install</a> ·
   <a href="#quickstart">Quickstart</a> ·
   <a href="#commands">Commands</a> ·
-  <a href="#use-cases">Use cases</a>
+  <a href="#use-cases">Use cases</a> ·
+  <a href="#use-with-an-ai-agent">Skill</a>
 </p>
 
 A puppeteer for terminal UIs. Drive `vim`, `emacs`, `htop`, `nethack`, or any
