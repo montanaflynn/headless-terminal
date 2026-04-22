@@ -13,6 +13,16 @@ metadata:
 
 `ht` is a daemon that owns a pseudo-terminal per session and parses output with the same VT engine Ghostty uses. You can launch a TUI, send keystrokes, snapshot the rendered screen, and block until a screen condition is met.
 
+## Install ht
+
+Check if the CLI is on `PATH`; if not, install it:
+
+```sh
+command -v ht || brew install montanaflynn/tap/ht
+```
+
+Without Homebrew, grab a tarball from the [releases page](https://github.com/montanaflynn/headless-terminal/releases) and move the binary onto `PATH`. macOS (Apple Silicon) and Linux (x86_64/arm64) only.
+
 ## When to reach for this
 
 - Target program draws to the alternate screen / uses (n)curses / reads `$TERM`.
