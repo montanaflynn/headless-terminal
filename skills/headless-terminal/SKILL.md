@@ -1,5 +1,5 @@
 ---
-name: ht
+name: headless-terminal
 description: Drive interactive terminal programs (vim, emacs, nethack, htop, CLI installers, REPLs, anything curses-based) headlessly via the `ht` CLI. Use when the task needs a program that expects a real TTY — won't run under plain pipes, draws to an alternate screen, or needs keystrokes like arrow keys, Ctrl-C, or function keys. Do not use for non-interactive commands that work fine with plain shell pipes.
 license: MIT
 compatibility: Requires the ht CLI (v0.1.0+) on macOS (Apple Silicon) or Linux.

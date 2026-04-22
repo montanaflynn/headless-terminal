@@ -1,4 +1,16 @@
-# ht — headless terminal
+<h1 align="center">headless terminal</h1>
+
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#commands">Commands</a> ·
+  <a href="#use-cases">Use cases</a> ·
+  <a href="#use-with-an-ai-agent">Skill</a>
+</p>
+
+<p align="center">
+  <img src="screenshot.png" alt="Claude Code driving nvim via ht">
+</p>
 
 A puppeteer for terminal UIs. Drive `vim`, `emacs`, `htop`, `nethack`, or any
 other interactive TUI from a CLI (or an AI agent) — spawn the program in a
@@ -125,7 +137,7 @@ ht send --wait-duration 150ms --view nethack-demo "y"
 
 ## Use with an AI agent
 
-An `ht`-aware skill lives in [`skills/ht/`](skills/ht/). It teaches an agent
+An `ht`-aware skill lives in [`skills/headless-terminal/`](skills/headless-terminal/). It teaches an agent
 when to reach for `ht`, the vim-style key notation, the wait-strategy decision
 tree (the part agents get wrong), and common recipes.
 
@@ -133,17 +145,17 @@ Preferred — [skills CLI](https://skills.sh) (handles per-agent paths for
 Claude Code, Codex, Cursor, Gemini, etc.):
 
 ```shell
-npx skills add montanaflynn/headless-terminal --skill ht
+npx skills add montanaflynn/headless-terminal --skill headless-terminal
 ```
 
 Fallback — drop it into Claude Code directly:
 
 ```shell
-cp -r skills/ht ~/.claude/skills/ht
+cp -r skills/headless-terminal ~/.claude/skills/headless-terminal
 ```
 
 The skill uses Anthropic's standard skills format — other agent frameworks
-that consume the same layout can point their loader at `skills/ht/` or copy
+that consume the same layout can point their loader at `skills/headless-terminal/` or copy
 it into their equivalent directory. Progressive disclosure: only the short
 `SKILL.md` is always in context; reference docs load on demand.
 
