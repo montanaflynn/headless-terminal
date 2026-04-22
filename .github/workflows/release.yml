@@ -103,3 +103,13 @@ jobs:
             || true
           # --clobber lets re-runs replace previous uploads for the same tag.
           gh release upload "$TAG" dist/*.tar.gz --clobber
+
+  homebrew:
+    name: update homebrew tap
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: trigger tap update
+        env:
+          GH_TOKEN: ${{ secrets.TAP_TOKEN }}
+        run: gh workflow run update-ht.yml --repo montanaflynn/homebrew-tap

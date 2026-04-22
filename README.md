@@ -26,6 +26,12 @@ shell doesn't give you:
 
 ## Install
 
+### Homebrew
+
+```shell
+brew install montanaflynn/tap/ht
+```
+
 ### Pre-built binary
 
 Grab the latest from the [releases page](https://github.com/montanaflynn/headless-terminal/releases).
@@ -71,27 +77,27 @@ Windows is not supported (no PTY).
 
 ```shell
 # Start a headless vim session, returns a short session ID.
-./ht run --name notes vim /tmp/notes.md
+ht run --name notes vim /tmp/notes.md
 
 # Drive it. Keys use vim-style notation (<CR>, <Esc>, <C-c>, <F1>, …).
-./ht send --view notes "ihello from an agent<Esc>:wq<CR>"
+ht send --view notes "ihello from an agent<Esc>:wq<CR>"
 
 # Session exited and the file is saved:
 cat /tmp/notes.md
 # → hello from an agent
 
-./ht remove notes
+ht remove notes
 ```
 
 Or watch a live session from a second pane:
 
 ```shell
 # Pane A: the watcher blocks until a matching session is created.
-./ht watch nethack-demo
+ht watch nethack-demo
 
 # Pane B (or an agent): create the session the watcher is waiting for.
-./ht run --size 78x46 --name nethack-demo nethack -u Claude
-./ht send --wait-duration 150ms --view nethack-demo "y"
+ht run --size 78x46 --name nethack-demo nethack -u Claude
+ht send --wait-duration 150ms --view nethack-demo "y"
 # (pane A now shows nethack, live)
 ```
 
