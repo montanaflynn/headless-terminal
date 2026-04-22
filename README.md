@@ -1,13 +1,15 @@
 <h1 align="center">headless terminal</h1>
 
-![Claude Code driving nvim via ht](screenshot.png)
-
 <p align="center">
   <a href="#install">Install</a> ·
   <a href="#quickstart">Quickstart</a> ·
   <a href="#commands">Commands</a> ·
   <a href="#use-cases">Use cases</a> ·
   <a href="#use-with-an-ai-agent">Skill</a>
+</p>
+
+<p align="center">
+  <img src="screenshot.png" alt="Claude Code driving nvim via ht">
 </p>
 
 A puppeteer for terminal UIs. Drive `vim`, `emacs`, `htop`, `nethack`, or any
