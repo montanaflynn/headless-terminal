@@ -1,4 +1,4 @@
-# ht — headless terminal
+<h1 align="center">headless terminal</h1>
 
 ![Claude Code driving nvim via ht](screenshot.png)
 
