@@ -62,6 +62,18 @@ jobs:
       - name: Run tests
         run: make test
 
+      - name: E2E (drive vim with ht)
+        shell: bash
+        run: |
+          rm -f /tmp/e2e.md
+          ./ht run --name e2e vim /tmp/e2e.md
+          ./ht wait --idle 300ms e2e
+          ./ht send --wait-exit e2e "ihello from ht<Esc>:wq<CR>"
+          ./ht remove e2e
+          got="$(cat /tmp/e2e.md)"
+          [ "$got" = "hello from ht" ] || { echo "expected 'hello from ht', got: $got"; exit 1; }
+          ./ht daemon stop || true
+
       - name: Package
         id: package
         shell: bash
