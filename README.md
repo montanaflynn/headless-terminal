@@ -34,19 +34,26 @@ brew install montanaflynn/tap/ht
 
 ### Pre-built binary
 
-Grab the latest from the [releases page](https://github.com/montanaflynn/headless-terminal/releases).
-One-liners for the currently-shipped platforms:
+Grab a tarball from the [releases page](https://github.com/montanaflynn/headless-terminal/releases),
+or extract + install in place for the currently-shipped platforms:
+
+**macOS (Apple Silicon)**
 
 ```shell
-# macOS (Apple Silicon)
 curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-darwin-arm64.tar.gz | tar xz
 sudo mv ht /usr/local/bin/
+```
 
-# Linux (x86_64)
+**Linux (x86_64)**
+
+```shell
 curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-linux-amd64.tar.gz | tar xz
 sudo mv ht /usr/local/bin/
+```
 
-# Linux (arm64)
+**Linux (arm64)**
+
+```shell
 curl -L https://github.com/montanaflynn/headless-terminal/releases/latest/download/ht-v0.1.0-linux-arm64.tar.gz | tar xz
 sudo mv ht /usr/local/bin/
 ```
@@ -103,17 +110,26 @@ ht send --wait-duration 150ms --view nethack-demo "y"
 
 ## Use with an AI agent
 
-An `ht`-aware skill lives in [`skill/`](skill/). It teaches an agent when to
-reach for `ht`, the vim-style key notation, the wait-strategy decision tree
-(the part agents get wrong), and common recipes. Install it into Claude Code:
+An `ht`-aware skill lives in [`skills/ht/`](skills/ht/). It teaches an agent
+when to reach for `ht`, the vim-style key notation, the wait-strategy decision
+tree (the part agents get wrong), and common recipes.
+
+Preferred — [skills CLI](https://skills.sh) (handles per-agent paths for
+Claude Code, Codex, Cursor, Gemini, etc.):
 
 ```shell
-cp -r skill ~/.claude/skills/ht
+npx skills add montanaflynn/headless-terminal --skill ht
+```
+
+Fallback — drop it into Claude Code directly:
+
+```shell
+cp -r skills/ht ~/.claude/skills/ht
 ```
 
 The skill uses Anthropic's standard skills format — other agent frameworks
-that consume the same layout can point their loader at `skill/` or copy it
-into their equivalent directory. Progressive disclosure: only the short
+that consume the same layout can point their loader at `skills/ht/` or copy
+it into their equivalent directory. Progressive disclosure: only the short
 `SKILL.md` is always in context; reference docs load on demand.
 
 ## Commands

@@ -1,6 +1,12 @@
 ---
 name: ht
 description: Drive interactive terminal programs (vim, emacs, nethack, htop, CLI installers, REPLs, anything curses-based) headlessly via the `ht` CLI. Use when the task needs a program that expects a real TTY — won't run under plain pipes, draws to an alternate screen, or needs keystrokes like arrow keys, Ctrl-C, or function keys. Do not use for non-interactive commands that work fine with plain shell pipes.
+license: MIT
+compatibility: Requires the ht CLI (v0.1.0+) on macOS (Apple Silicon) or Linux.
+metadata:
+  author: Montana Flynn
+  version: "1.0"
+  homepage: https://github.com/montanaflynn/headless-terminal
 ---
 
 # ht — headless terminal
@@ -38,14 +44,14 @@ ht send S --wait-text "Saved" "ihello<Esc>:wq<CR>"
 ht send S --wait-idle 200ms --view "q"
 ```
 
-Picking the right wait flag is the hard part — see `reference/waits.md` before writing sends for a new TUI.
+Picking the right wait flag is the hard part — see `references/waits.md` before writing sends for a new TUI.
 
 ## Quick pointers
 
-- **Key notation** (vim-style `<C-c>`, `<CR>`, `<F1>`, …): `reference/keys.md`
-- **Wait strategies** (idle vs text vs cursor vs change vs duration): `reference/waits.md`
-- **Recipes** (edit-a-file, REPL, installer, watch-live, extract text): `reference/recipes.md`
-- **Troubleshooting** (exit codes, timeouts, stuck sessions): `reference/troubleshooting.md`
+- **Key notation** (vim-style `<C-c>`, `<CR>`, `<F1>`, …): `references/keys.md`
+- **Wait strategies** (idle vs text vs cursor vs change vs duration): `references/waits.md`
+- **Recipes** (edit-a-file, REPL, installer, watch-live, extract text): `references/recipes.md`
+- **Troubleshooting** (exit codes, timeouts, stuck sessions): `references/troubleshooting.md`
 
 ## Output formats
 
