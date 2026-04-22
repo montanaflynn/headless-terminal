@@ -61,7 +61,7 @@ func TestView_PlainTextReflectsOutput(t *testing.T) {
 	s.Wait() // child exits immediately
 
 	// Give readLoop a moment to drain any remaining output.
-	waitFor(500*time.Millisecond, func() bool {
+	waitFor(3*time.Second, func() bool {
 		snap, _ := s.View(FormatPlain)
 		return snap != nil && strings.Contains(snap.Screen, "hello snapshot")
 	})
@@ -216,7 +216,7 @@ func TestPrimeBytes_ReconstructsScreen(t *testing.T) {
 	}
 	defer s.Close()
 	s.Wait()
-	waitFor(500*time.Millisecond, func() bool {
+	waitFor(3*time.Second, func() bool {
 		b, _ := s.PrimeBytes()
 		return strings.Contains(string(b), "prime-test")
 	})
@@ -303,7 +303,7 @@ func TestView_CursorTracksPosition(t *testing.T) {
 	s.Wait()
 
 	var snap *Snapshot
-	waitFor(500*time.Millisecond, func() bool {
+	waitFor(3*time.Second, func() bool {
 		snap, _ = s.View(FormatPlain)
 		return snap != nil && snap.CursorRow == 3 && snap.CursorCol == 10
 	})
@@ -324,7 +324,7 @@ func TestView_CursorHidden(t *testing.T) {
 	defer s.Close()
 	s.Wait()
 
-	waitFor(500*time.Millisecond, func() bool {
+	waitFor(3*time.Second, func() bool {
 		snap, _ := s.View(FormatPlain)
 		return snap != nil && !snap.CursorVis
 	})

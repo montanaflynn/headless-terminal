@@ -29,7 +29,7 @@ jobs:
             goarch: arm64
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
@@ -40,7 +40,7 @@ jobs:
           version: 0.15.2
 
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           # Match whatever's pinned in go.mod so CI tracks the project's
           # actual minimum. Bumping here requires editing go.mod.
@@ -72,7 +72,7 @@ jobs:
           tar czf "dist/${NAME}.tar.gz" ht README.md
           echo "name=${NAME}" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.package.outputs.name }}
           path: dist/*.tar.gz
@@ -84,9 +84,9 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
