@@ -1,5 +1,9 @@
 # ht — headless terminal
 
+![Claude Code driving nvim via ht](screenshot.png)
+
+[Install](#install) · [Quickstart](#quickstart) · [Commands](#commands) · [Use cases](#use-cases)
+
 A puppeteer for terminal UIs. Drive `vim`, `emacs`, `htop`, `nethack`, or any
 other interactive TUI from a CLI (or an AI agent) — spawn the program in a
 background session, send keystrokes, snapshot the screen, and watch the whole
