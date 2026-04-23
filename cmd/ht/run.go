@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
-	"flag"
 	"fmt"
+	flag "github.com/spf13/pflag"
 	"os"
 	"strconv"
 	"strings"
@@ -16,9 +16,15 @@ type envList []string
 
 func (e *envList) String() string     { return strings.Join(*e, ",") }
 func (e *envList) Set(s string) error { *e = append(*e, s); return nil }
+func (e *envList) Type() string       { return "K=V" }
 
 func cmdRun(args []string) error {
 	fs := flag.NewFlagSet("run", flag.ContinueOnError)
+	// `ht run` runs an arbitrary child command; flags after the cmd belong
+	// to the child (e.g. `ht run nethack -u Claude`). Disable interspersed
+	// parsing so pflag stops at the first positional and hands everything
+	// after it to the child.
+	fs.SetInterspersed(false)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, "usage: ht run [--size 80x24] [--cwd DIR] [--env K=V] [--name N] [--json] <cmd> [args...]")
 	}

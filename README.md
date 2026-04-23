@@ -1,26 +1,26 @@
 <h1 align="center">headless terminal</h1>
 
 <p align="center">
+  <a href="#examples">Examples</a> ·
   <a href="#install">Install</a> ·
-  <a href="#quickstart">Quickstart</a> ·
+  <a href="#agent-skill">Agent Skill</a> ·
   <a href="#commands">Commands</a> ·
-  <a href="#use-cases">Use cases</a> ·
-  <a href="#use-with-an-ai-agent">Skill</a>
+  <a href="#architecture">Architecture</a>
 </p>
 
 <p align="center">
   <img src="screenshot.png" alt="Claude Code driving nvim via ht">
 </p>
 
-A puppeteer for terminal UIs. Drive `vim`, `emacs`, `htop`, `nethack`, or any
+Puppeteer for terminal UIs. Drive `vim`, `emacs`, `htop`, `nethack`, or any
 other interactive TUI from a CLI (or an AI agent) — spawn the program in a
 background session, send keystrokes, snapshot the screen, and watch the whole
 thing live from another shell.
 
 Under the hood: a Unix-socket daemon owns a pseudo-terminal per session and
 pipes its output through [libghostty-vt](https://github.com/ghostty-org/ghostty)
-for VT parsing. You get the same terminal emulation used by the Ghostty app,
-in a detached, scriptable, snapshot-able form.
+for VT parsing. You get the terminal emulation used by the Ghostty app, in a 
+detached, scriptable, snapshot-able form.
 
 ## Why
 
@@ -34,23 +34,67 @@ shell doesn't give you:
 - Synchronization primitives so the driver knows when the TUI has finished
   redrawing.
 
-`ht` is those three things, wrapped in a daemon + a boring CLI.
+`ht` is those three things, wrapped in a simple CLI with a daemon.
 
-## Use cases
+## Examples
 
-- **Agentic coding.** Let an agent drive interactive CLIs it otherwise can't —
+**Agentic coding.** Let an agent drive interactive CLIs it otherwise can't —
   `git add -p`, `gh auth login`, `create-next-app`, REPLs, debuggers, even
   `vim` for surgical edits.
-- **CI tests for TUIs.** Script an interactive program in GitHub Actions:
+
+```shell
+# Start a headless vim session, returns a short session ID.
+ht run --name notes vim /tmp/notes.md
+
+# Drive it. Keys use vim-style notation (<CR>, <Esc>, <C-c>, <F1>, …).
+ht send notes "ihello from an agent<Esc>:wq<CR>" --view # return view
+
+# Session exited and the file is saved:
+cat /tmp/notes.md
+# → hello from an agent
+
+# Remove the session completely
+ht remove notes
+```
+
+**CI tests for TUIs.** Script an interactive program in GitHub Actions:
   run it, send keys, assert against the rendered screen (as text or a PNG
   snapshot). Covers paths `expect`/`pexpect` can't — alternate screen,
   colors, cursor position.
-- **Demo and doc generation.** Record keystroke-perfect asciicasts with
+
+```shell
+# Boot a TUI, send keys, fail the build if the screen doesn't match.
+ht run --name smoke vim /tmp/demo.md
+ht send smoke "ihello from CI<Esc>" --wait-idle 200ms
+ht view smoke | grep -q "hello from CI" || { echo "render failed"; exit 1; }
+ht send smoke ":q!<CR>"
+```
+
+**Demo and doc generation.** Record keystroke-perfect asciicasts with
   `ht record`, render to GIF via `agg`, or grab a one-shot PNG of the
   current frame for a README or bug report.
-- **Follow-along debugging.** `ht watch` streams a session live to another
+
+```shell
+# Drive a session, then grab a PNG of the current frame for a README or bug report.
+ht run --name demo bash
+ht send demo "echo 'headless terminal'<CR>" --wait-idle 200ms
+ht view demo --format png > screenshot.png
+ht stop demo
+```
+
+**Follow-along debugging.** `ht watch` streams a session live to another
   pane, so a human can shoulder-surf whatever an agent (or a detached
   process) is driving — handy during skill development or pair debugging.
+
+```shell
+# Pane A: the watcher blocks until a matching session is created.
+ht watch nethack-demo
+
+# Pane B (or an agent): create the session the watcher is waiting for.
+ht run --size 78x46 --name nethack-demo nethack -u Claude
+ht send nethack-demo "y" --wait-duration 150ms --view
+# (pane A now shows nethack, live)
+```
 
 ## Install
 
@@ -107,35 +151,8 @@ at a pinned commit and builds `libghostty-vt.a` with Zig; then Go builds
 
 </details>
 
-## Quickstart
 
-```shell
-# Start a headless vim session, returns a short session ID.
-ht run --name notes vim /tmp/notes.md
-
-# Drive it. Keys use vim-style notation (<CR>, <Esc>, <C-c>, <F1>, …).
-ht send --view notes "ihello from an agent<Esc>:wq<CR>"
-
-# Session exited and the file is saved:
-cat /tmp/notes.md
-# → hello from an agent
-
-ht remove notes
-```
-
-Or watch a live session from a second pane:
-
-```shell
-# Pane A: the watcher blocks until a matching session is created.
-ht watch nethack-demo
-
-# Pane B (or an agent): create the session the watcher is waiting for.
-ht run --size 78x46 --name nethack-demo nethack -u Claude
-ht send --wait-duration 150ms --view nethack-demo "y"
-# (pane A now shows nethack, live)
-```
-
-## Use with an AI agent
+## Agent Skill
 
 An `ht`-aware skill lives in [`skills/headless-terminal/`](skills/headless-terminal/). It teaches an agent
 when to reach for `ht`, the vim-style key notation, the wait-strategy decision
@@ -172,9 +189,6 @@ ht record <sid>       record session as asciicast (pipe to agg for GIFs)
 ht stop <sid>         graceful shutdown (SIGTERM, escalates)
 ht kill <sid>         immediate SIGKILL
 ht remove <sid>       delete an exited session's record
-
-ht debug <cmd...>     foreground diagnostic; runs a cmd through libghostty
-                      and prints the final screen on exit
 ht daemon [stop]      manual daemon control (normally auto-started)
 ```
 
