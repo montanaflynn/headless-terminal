@@ -18,11 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Pinned to macos-15: zig 0.15.2 cannot link binaries on the
-          # macOS 26 (Tahoe) image that macos-latest now points at
-          # (undefined libSystem symbols, e.g. __availability_version_check).
-          # Unpin once the ghostty pin + zig move to a Tahoe-capable release.
-          - os: macos-15
+          - os: macos-latest
             goos: darwin
             goarch: arm64
           - os: ubuntu-latest
@@ -44,7 +40,7 @@ jobs:
         uses: montanaflynn/setup-zig@b7fdb06bb16b5675d7a62955ba4e6bc38144cb7e
         with:
           # Pinned to match what the pinned ghostty commit requires.
-          version: 0.15.2
+          version: 0.16.0
 
       - name: Install Go
         uses: actions/setup-go@v6

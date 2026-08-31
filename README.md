@@ -137,7 +137,7 @@ statically links `libghostty-vt`, and depends only on libc.
 <details>
 <summary>From source</summary>
 
-Requires [Zig](https://ziglang.org) 0.15.2, CMake, pkg-config, and Go 1.22+.
+Requires [Zig](https://ziglang.org) 0.16.0, CMake, pkg-config, and Go 1.22+.
 
 ```shell
 git clone https://github.com/montanaflynn/headless-terminal
